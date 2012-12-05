@@ -20,9 +20,7 @@ public class Message {
     Route routingInfo;
 
     public static void main(String[] args) {
-        String s = String.valueOf(5);
+
     }
-
-
 
 }
