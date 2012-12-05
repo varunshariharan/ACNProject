@@ -12,15 +12,12 @@ public class Message {
     public static int DATA = 4;
     public static int WITHDRAW = 5;
     public static int ERROR = 6;
+    public static int ACK = 7;
 
     int messageType;
-    String destinationRouter;
-    String sourceRouter;
+    int destinationRouter;
+    int sourceRouter;
     String message;
     Route routingInfo;
-
-    public static void main(String[] args) {
-
-    }
 
 }
