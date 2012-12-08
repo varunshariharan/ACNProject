@@ -2,9 +2,13 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,9 +22,12 @@ public class Router {
     String routerString;
     String ip;
     int portNumber;
+    BlockingQueue<DatagramPacket> packetQueue = new LinkedBlockingQueue<DatagramPacket>();
     char routerType;
-    Map<Integer,String> routeToIpMap = new HashMap<Integer, String>();
-    RoutingTable routingTable;
+    Map<Integer,String> routerToIpMap = new HashMap<Integer, String>(); //routerID to routerIP
+    Map<String,Integer> routerStringToIDMap = new HashMap<String, Integer>(); //routerString to routerID
+    Map<Integer,RoutingInfo> routingTable = new HashMap<Integer, RoutingInfo>(); //routerID to routingInfo
+    Map<Integer,AtomicInteger> timeoutTable = new HashMap<Integer, AtomicInteger>(); //routerID to timeoutCount
     int domainId;
     Set<Integer> neighbours = new HashSet<Integer>();
 
@@ -31,6 +38,25 @@ public class Router {
         this.portNumber = portNumber;
         try {
             readConfigFile();
+            //spawn userInputHandler thread
+            UserInputHandler userInputHandler = new UserInputHandler(this);
+            Thread userInputThread = new Thread(userInputHandler);
+            userInputThread.start();
+
+            //start message handler thread
+            MessageHandler messageHandler = new MessageHandler(this);
+            Thread messageThread = new Thread(messageHandler);
+            messageThread.start();
+
+            //start timeoutHandler thread
+            TimeoutMonitor timeoutMonitor = new TimeoutMonitor(this);
+            Thread timeoutThread = new Thread(timeoutMonitor);
+            timeoutThread.start();
+
+            //look for new messages and if message received, put it in a queue
+            while(true){
+
+            }
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

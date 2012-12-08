@@ -6,11 +6,13 @@
  * To change this template use File | Settings | File Templates.
  */
 public class Route {
-    char firstHopType;
-    String path;
-    String destionationRouterId;
+    int destinationRouterId;
+    boolean isGatewayRouter;
+    int numberOfHops;
 
-    public static void main(String[] args) {
-
+    public Route(RoutingInfo routingInfo) {
+        this.destinationRouterId = routingInfo.destinationRouterId;
+        this.isGatewayRouter = routingInfo.isGatewayRouter;
+        this.numberOfHops = routingInfo.numberOfHops;
     }
 }

@@ -1,0 +1,4 @@
+R1 localhost:8000
+R2 localhost:8100
+R3 localhost:8200
+R4 localhost:8300
