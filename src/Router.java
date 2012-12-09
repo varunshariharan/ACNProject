@@ -1,8 +1,11 @@
 import org.apache.commons.io.FileUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
@@ -54,8 +57,14 @@ public class Router {
             timeoutThread.start();
 
             //look for new messages and if message received, put it in a queue
+            DatagramSocket serverSocket = new DatagramSocket(portNumber);
+            byte[] receiveData = new byte[1024];
+            byte[] sendData = new byte[1024];
+            DatagramPacket receivePacket;
             while(true){
-
+                receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                serverSocket.receive(receivePacket);
+                packetQueue.add(receivePacket);
             }
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -82,6 +91,16 @@ public class Router {
                 }
             }
         }
+    }
+
+    public void sendMessage(Message message, DatagramSocket socket, InetAddress IPAddress, int portNumber) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream out=new ObjectOutputStream(bos);
+        out.writeObject(message);
+        out.flush();
+        byte[] byteObject = bos.toByteArray();
+        DatagramPacket packet=new DatagramPacket(byteObject, byteObject.length,IPAddress,portNumber);
+        socket.send(packet);
     }
 
     public static void main(String[] args) throws UnknownHostException {

@@ -20,4 +20,24 @@ public class Message {
     String message;
     Route routingInfo;
 
+    public Message(int messageType, int destinationRouter, int sourceRouter) {
+        this.messageType = messageType;
+        this.destinationRouter = destinationRouter;
+        this.sourceRouter = sourceRouter;
+    }
+
+    public Message(int messageType, int destinationRouter, int sourceRouter, Route routingInfo) {
+        this.messageType = messageType;
+        this.destinationRouter = destinationRouter;
+        this.sourceRouter = sourceRouter;
+        this.routingInfo = routingInfo;
+    }
+
+    public Message(int messageType, int destinationRouter, int sourceRouter, String message) {
+        this.messageType = messageType;
+        this.destinationRouter = destinationRouter;
+        this.sourceRouter = sourceRouter;
+        this.message = message;
+    }
 }
+

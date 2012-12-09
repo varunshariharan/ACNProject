@@ -25,6 +25,7 @@ public class MessageHandler implements Runnable{
                 System.out.println("Message caught from queue");
                 //process message
 
+
             } catch (InterruptedException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
