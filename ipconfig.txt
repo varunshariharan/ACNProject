@@ -1,4 +1,6 @@
-R1 localhost:8000
-R2 localhost:8100
-R3 localhost:8200
-R4 localhost:8300
+p1 localhost:8000
+p2 localhost:8100
+p3 localhost:8200
+p4 localhost:8300
+p5 localhost:8400
+p8 localhost:8700

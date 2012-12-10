@@ -1,5 +1,3 @@
-import java.net.*;
-
 /**
  * Created with IntelliJ IDEA.
  * User: varunhariharan
@@ -15,20 +13,20 @@ public class HelloMessageSender implements Runnable{
 
     @Override
     public void run() {
-        for (Integer neighborRouterID : router.neighbours) {
-            //get IP address and send message
-            String address = router.routerToIpMap.get(neighborRouterID);
-            String[] split = address.split(":");
-            Message helloMessage = new Message(Message.HELLO,neighborRouterID,router.routerId);
+        System.out.println("Hello Message sender Started");
+        while(true){
             try {
-                DatagramSocket socket = new DatagramSocket();
-                InetAddress IPAddress = InetAddress.getByName(split[0]);
-                router.sendMessage(helloMessage,socket,IPAddress, Integer.parseInt(split[1]));
-                //write logic to get ack, if no ack then retransmit
-                socket.close();
+                Thread.sleep(4000);
+                for (Integer neighborRouterID : router.neighbours) {
+                    //get IP address and send message
+                    Message helloMessage = new Message(Message.HELLO,neighborRouterID,router.routerId,router.currentSequenceNumber++,router.routerId);
+                    router.sendMessage(helloMessage,neighborRouterID);
+                        //write logic to get ack, if no ack then retransmit
+                }
             } catch (Exception e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
+
     }
 }

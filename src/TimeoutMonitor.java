@@ -16,21 +16,29 @@ public class TimeoutMonitor implements Runnable{
 
     @Override
     public void run() {
+        System.out.println("Timeout Monitor Started");
         while(true){
             try {
                 Thread.sleep(5000);
+                System.out.println("Checking");
                 //scan table and decrement counts
                 Map<Integer,AtomicInteger> timeoutTable = router.timeoutTable;
-                for (Integer routerID : timeoutTable.keySet()) {
-                    AtomicInteger count = timeoutTable.get(routerID);
+                for (Integer helloMessageCheckRouterID : timeoutTable.keySet()) {
+                    AtomicInteger count = timeoutTable.get(helloMessageCheckRouterID);
                     if(count.decrementAndGet()==0){
                         //remove entry from router table
-                        router.routingTable.remove(routerID);
+                        if(router.routingTable.containsKey(helloMessageCheckRouterID))                                               {
+                            RoutingInfo remove = router.routingTable.get(helloMessageCheckRouterID).remove(helloMessageCheckRouterID);
+                            System.out.println("Router down. RouterID : "+helloMessageCheckRouterID);
+                        }
                         //TODO send routingInfo to neighbours
-
+                        for (Integer neighbourRouterID : router.neighbours) {
+                            Message withdrawMessage = new Message(Message.WITHDRAW,neighbourRouterID,router.routerId,String.valueOf(helloMessageCheckRouterID),router.currentSequenceNumber++,router.routerId);
+                            router.sendMessage(withdrawMessage,neighbourRouterID);
+                        }
                     }
                 }
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
 
